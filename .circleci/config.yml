@@ -13,6 +13,10 @@ executors:
     docker:
       - image: cimg/php:8.4
     resource_class: small
+  php85:
+    docker:
+      - image: cimg/php:8.5
+    resource_class: small
 
 jobs:
   analyse:
@@ -25,14 +29,14 @@ jobs:
       - run: composer update
       - run: composer analyse
   coverage:
-    executor: php84
+    executor: php85
     steps:
       - run: sudo -E pecl install pcov && sudo -E docker-php-ext-enable pcov
       - checkout
       - run: composer update
       - run: composer coverage
   lint:
-    executor: php84
+    executor: php85
     steps:
       - checkout
       - run: composer update
@@ -55,10 +59,10 @@ workflows:
       - analyse:
           matrix:
             parameters:
-              php_executor: [php82, php83, php84]
+              php_executor: [php82, php83, php84, php85]
       - coverage
       - lint
       - test:
           matrix:
             parameters:
-              php_executor: [php82, php83, php84]
+              php_executor: [php82, php83, php84, php85]
