@@ -1,10 +1,6 @@
 version: 2.1
 
 executors:
-  php81:
-    docker:
-      - image: cimg/php:8.1
-    resource_class: small
   php82:
     docker:
       - image: cimg/php:8.2
@@ -12,6 +8,10 @@ executors:
   php83:
     docker:
       - image: cimg/php:8.3
+    resource_class: small
+  php84:
+    docker:
+      - image: cimg/php:8.4
     resource_class: small
 
 jobs:
@@ -25,14 +25,14 @@ jobs:
       - run: composer update
       - run: composer analyse
   coverage:
-    executor: php83
+    executor: php84
     steps:
       - run: sudo -E pecl install pcov && sudo -E docker-php-ext-enable pcov
       - checkout
       - run: composer update
       - run: composer coverage
   lint:
-    executor: php83
+    executor: php84
     steps:
       - checkout
       - run: composer update
@@ -55,10 +55,10 @@ workflows:
       - analyse:
           matrix:
             parameters:
-              php_executor: [php81, php82, php83]
+              php_executor: [php82, php83, php84]
       - coverage
       - lint
       - test:
           matrix:
             parameters:
-              php_executor: [php81, php82, php83]
+              php_executor: [php82, php83, php84]
